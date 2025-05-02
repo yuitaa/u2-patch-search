@@ -18,7 +18,7 @@ for (const file of files) {
 
   const lines = content.split('\n').map(line => line.trim()).filter(Boolean);
   for (const line of lines) {
-    const match = line.match(/^- (\w+): (.+)$/i);
+    const match = line.match(/^- ([\w\s]+):(.+)$/i);
     if (match) {
       const type = toSnakeCase(match[1]);
       const text = match[2].trim();
