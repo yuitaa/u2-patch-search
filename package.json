@@ -1,7 +1,12 @@
 {
   "name": "u2-patch-search",
   "version": "1.0.0",
-  "scripts": {},
+  "scripts": {
+    "prestart": "node scripts/convertText.js",
+    "start": "webpack serve --mode development",
+    "prebuild": "node scripts/convertText.js",
+    "build": "webpack --mode production"
+  },
   "devDependencies": {
     "css-loader": "^7.1.2",
     "css-minimizer-webpack-plugin": "^7.0.2",
