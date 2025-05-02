@@ -11,6 +11,7 @@ function toSnakeCase(str) {
 const files = fs.readdirSync(docsDir).filter(f => f.endsWith('.txt'));
 
 const result = [];
+const types = new Set();
 
 for (const file of files) {
   const version = path.basename(file, '.txt');
@@ -23,11 +24,15 @@ for (const file of files) {
       const type = toSnakeCase(match[1]);
       const text = match[2].trim();
       result.push({ version, type, text });
+      types.add(type);
     }
   }
 }
 
-const jsOutput = `export const changeLogs = ${JSON.stringify(result, null, 2)};`;
+const jsOutput = `export const fixTypes = ${JSON.stringify(Array.from(types), null, 2)}
+
+export const changeLogs = ${JSON.stringify(result, null, 2)};`;
+
 fs.writeFileSync(outputFile, jsOutput, 'utf-8');
 
 console.log(`✅ Data written to ${outputFile}`);
