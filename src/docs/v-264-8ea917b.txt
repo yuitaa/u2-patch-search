@@ -1,0 +1,2 @@
+- Regression fix: Join by lobby id UI fix
+- Crash fix: Crash on startup related to Discord

@@ -1,0 +1,9 @@
+- Improvement: Simplified privacy policy UI
+- New: Added error message when the game can’t access the internet (this is for the beta only)
+- Bug fix: The lobby browser UI broke with many lobbies
+- Bug fix: Crash dumper wasn't working
+- Bug fix: Tutorial did not progress when the privacy policy wasn’t accepted
+- Bug fix: The cartridge shop didn’t display cartridges that had been found already
+- Bug fix: The cartridge shop now tells you that you can’t buy a second slot in the beta
+- Bug fix: Key giveaway QR-code blurry
+- Crash fix: Crash when putting conveyor belt masts on conveyor belts

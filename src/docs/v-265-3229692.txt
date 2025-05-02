@@ -1,0 +1,9 @@
+- Improvement: Adapted shadow, tone mapping and outline settings
+- Bug fix: Tutorials with pointer-bubble and buttons were shown for non-local players
+- Bug fix: Private lobbies could be joined by random matchmaking
+- Bug fix: Random matchmaking created invalid lobbies (without session ids)
+- Bug fix: Only the player picking up a cassette unlocked the song; now all joined players will get it unlocked
+- Bug fix: Removed “switch tabs” buttons in game end menu
+- Bug fix: “Join by Session-Id” did not accept [space] to enter
+- Bug fix: Wagon descriptions sometimes cropped
+- Crash fix: Potential crash fix when inserting text
