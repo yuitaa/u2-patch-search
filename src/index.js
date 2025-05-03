@@ -52,7 +52,7 @@ function createFixTypeCheckbox(name) {
 function createVersionOption(name, isExpVersion) {
   const option = document.createElement('option');
   if (isExpVersion) {
-    option.textContent = name + ' (exp)';
+    option.textContent = name + ' (Exp)';
   } else {
     option.textContent = name;
   }
