@@ -1,13 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Unrailed 2 パッチノート検索">
   <title>U2 Patch Note Search</title>
 </head>
+
 <body>
 
+  <div class="container mt-5">
+    <header class="mb-4">
+      <h1 class="text-center">Unrailed 2 パッチノート検索</h1>
+    </header>
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <input type="text" class="form-control" placeholder="検索キーワードを入力..." id="query" aria-label="検索キーワード">
 
+        <div class="row">
+
+          <!-- 左 -->
+          <div class="col-12 col-lg-4 my-2 separator_line">
+            <div>種類</div>
+            <div class="form-check" id="fix-types-group"></div>
+          </div>
+
+          <!-- 右 -->
+          <div class="col-12 col-lg-8 my-2">
+            <div>バージョン</div>
+            <div class="input-group">
+              <select class="form-select" id="version-start" aria-label="バージョン選択ここから"></select>
+              <span class="input-group-text">から</span>
+              <select class="form-select" id="version-end" aria-label="バージョン選択ここまで"></select>
+              <span class="input-group-text">まで</span>
+            </div>
+
+            <select class="form-select my-2" id="include" aria-label="含めるバージョン" >
+              <option value="all">すべてのバージョン</option>
+              <option value="stable">安定版のみ</option>
+              <option value="exp">Experimental版のみ</option>
+            </select>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 検索結果 -->
+  <div class="container mt-5" id="results">
+
+  </div>
 
 </body>
+
 </html>
