@@ -2,22 +2,26 @@ import './style.css';
 import { fixTypes, versions, versionIndexes, changeLogs } from './generated/data.js';
 import { fixTypePrefixes } from './consts.js'
 
+function toTitleCase(str) {
+  return str
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+
+function getVersionData(version) {
+  return versions[versionIndexes[version]];
+}
+
+function getTwemojiCdnUrl(emoji) {
+  const unicode = Array.from(emoji)
+    .map(char => `${char.codePointAt(0).toString(16).toLowerCase()}`)
+    .join('');
+  const url = `https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/72x72/${unicode}.png`;
+  return url;
+}
+
 function createFixTypeCheckbox(name) {
-  function toTitleCase(str) {
-    return str
-      .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
-  }
-
-  function getTwemojiCdnUrl(emoji) {
-    const unicode = Array.from(emoji)
-      .map(char => `${char.codePointAt(0).toString(16).toLowerCase()}`)
-      .join('');
-    const url = `https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/72x72/${unicode}.png`;
-    return url;
-  }
-
   const container = document.createElement('div');
 
   // label
@@ -59,6 +63,96 @@ function createVersionOption(name, isExpVersion) {
   }
   option.value = name;
   return option
+}
+
+function createTableRow(data, query) {
+  function highlightText(text, target) {
+    function escapeHtml(string) {
+      return string.replace(/[&'`"<>]/g, function (match) {
+        return {
+          '&': '&amp;',
+          "'": '&#x27;',
+          '`': '&#x60;',
+          '"': '&quot;',
+          '<': '&lt;',
+          '>': '&gt;',
+        }[match]
+      });
+    }
+    const escapedText = escapeHtml(text);
+    const escapedTarget = escapeHtml(target);
+
+    const index = escapedText.toLowerCase().indexOf(escapedTarget.toLowerCase());
+    if (index === -1) return escapedText;
+
+    const before = escapedText.slice(0, index);
+    const after = escapedText.slice(index + escapedTarget.length);
+    const inner = escapedText.slice(index, index + escapedTarget.length);
+
+    const wrapped = `<span class="text-bg-warning">${inner}</span>`;
+
+    return before + wrapped + after;
+  }
+
+  const versionData = getVersionData(data.version);
+  const prefixEmoji = fixTypePrefixes[data.type];
+
+  const container = document.createElement('div');
+  container.classList.add('row', 'border-bottom', 'pt-1', 'result-table-row');
+
+  // バージョン
+  const version = document.createElement('div');
+  version.classList.add(
+    'col-6',
+    'col-md-2',
+    'text-truncate',
+    'text-nowrap',
+    'd-flex',
+    'align-items-start'
+  );
+  if (versionData.exp) {
+    const expBadge = document.createElement('div');
+    expBadge.classList.add('badge', 'text-bg-dark', 'me-1');
+    expBadge.textContent = 'Exp';
+    version.appendChild(expBadge)
+  }
+  const versionLink = document.createElement('a');
+  versionLink.classList.add('fw-bold', 'text-reset');
+  versionLink.title = `${versionData.date} | ${versionData.version}`;
+  versionLink.href = versionData.url;
+  versionLink.textContent = versionData.version;
+  version.appendChild(versionLink);
+  container.appendChild(version);
+
+  // 種類
+  const type = document.createElement('div');
+  type.classList.add(
+    'col-6',
+    'col-md-1',
+    'text-truncate',
+    'text-nowrap'
+  );
+
+  if (prefixEmoji) {
+    const prefix = document.createElement('img');
+    prefix.src = getTwemojiCdnUrl(prefixEmoji);
+    prefix.alt = prefixEmoji;
+    prefix.classList.add('me-1', 'emoji');
+    type.appendChild(prefix);
+  };
+  type.appendChild(document.createTextNode(toTitleCase(data.type)));
+  container.appendChild(type)
+
+  // 内容
+  const content = document.createElement('div');
+  content.classList.add('col', 'col-md-9');
+  if (query) {
+    content.innerHTML = highlightText(data.text, query);
+  } else {
+    content.textContent = data.text;
+  };
+  container.appendChild(content);
+  return container;
 }
 
 function getFormData() {
@@ -132,7 +226,8 @@ function parseQuery(search) {
 }
 
 function onFormUpdate() {
-  const searchParam = parseFormData(getFormData());
+  const formData = getFormData();
+  const searchParam = parseFormData(formData);
 
   if (searchParam) {
     const url = `${location.origin}${location.pathname}?${searchParam}`;
@@ -140,7 +235,30 @@ function onFormUpdate() {
   } else {
     const url = `${location.origin}${location.pathname}`;
     history.replaceState(null, "", url);
-  }
+  };
+
+  document.querySelectorAll('.result-table-row').forEach(el => el.remove());
+
+  // 検索
+  const searchResult = changeLogs
+    .filter((change) => {
+      const versionData = getVersionData(change.version);
+
+      const versionIndexThis = versionIndexes[versionData.version];
+      const versionIndexStart = versionIndexes[formData.versionStart];
+      const versionIndexEnd = versionIndexes[formData.versionEnd];
+
+      if (formData.excludeTypes.includes(change.type)) { return false; };
+      if (versionData.exp && formData.include === 'stable') { return false; };
+      if (!versionData.exp && formData.include === 'exp') { return false; };
+      if (versionIndexThis < versionIndexStart || versionIndexEnd < versionIndexThis) { return false };
+      if (formData.query && change.text.toLocaleLowerCase().indexOf(formData.query.toLowerCase()) === -1) { return false; };
+      return true;
+    });
+  document.getElementById('found-count').textContent = searchResult.length;
+  searchResult.forEach((change) => {
+    document.getElementById('result-table').appendChild(createTableRow(change, formData.query));
+  });
 }
 
 window.addEventListener('load', () => {
@@ -164,4 +282,6 @@ window.addEventListener('load', () => {
   ['version-start', 'version-end', 'include'].forEach((id) => { document.getElementById(id).addEventListener('change', onFormUpdate) });
   document.getElementById('query').addEventListener('input', onFormUpdate)
   setFormData(parseQuery(location.search));
+
+  onFormUpdate();
 })
