@@ -156,7 +156,7 @@ window.addEventListener('load', () => {
     });
 
   versions
-    .forEach((version, i, array) => {
+    .forEach((version) => {
       const option = createVersionOption(version.version, version.exp);
       document.getElementById('version-end').appendChild(option);
     });
