@@ -31,14 +31,23 @@ for (const file of files) {
   const version = path.basename(file, '.md');
   const content = fm(fs.readFileSync(path.join(docsDir, file), 'utf-8'));
 
-  const lines = content.body.split('\n').map(line => line.trim()).filter(Boolean);
-
   const date = parseDate(content.attributes.date);
   const url = content.attributes.url;
   const exp = !!content.attributes.exp;
 
   versions.push({ version, date, url, exp })
+}
 
+const sortedVersions = versions.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+for (let i in sortedVersions) {
+  versionIndexes[sortedVersions[i].version] = +i;
+}
+
+sortedVersions.forEach((v)=>{
+  const content = fm(fs.readFileSync(path.join(docsDir, v.version + '.md'), 'utf-8'));
+  const version = v.version;
+  const lines = content.body.split('\n').map(line => line.trim()).filter(Boolean);
   for (const line of lines) {
     const match = line.match(/^- ([\w\s]+):(.+)$/i);
     if (match) {
@@ -48,13 +57,7 @@ for (const file of files) {
       types.add(type);
     }
   }
-}
-
-const sortedVersions = versions.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-for (let i in sortedVersions) {
-  versionIndexes[sortedVersions[i].version] = +i;
-}
+});
 
 const jsOutput = `export const fixTypes = ${JSON.stringify(Array.from(types), null, 2)};
 
