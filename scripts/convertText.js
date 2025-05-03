@@ -25,6 +25,7 @@ const files = fs.readdirSync(docsDir).filter(f => f.endsWith('.md'));
 const result = [];
 const versions = [];
 const types = new Set();
+const versionIndexes = {};
 
 for (const file of files) {
   const version = path.basename(file, '.md');
@@ -49,9 +50,17 @@ for (const file of files) {
   }
 }
 
-const jsOutput = `export const fixTypes = ${JSON.stringify(Array.from(types), null, 2)}
+const sortedVersions = versions.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-export const versions = ${JSON.stringify(versions.sort((a, b) => new Date(a.date) - new Date(b.date)), null, 2)}
+for (let i in sortedVersions) {
+  versionIndexes[sortedVersions[i].version] = +i;
+}
+
+const jsOutput = `export const fixTypes = ${JSON.stringify(Array.from(types), null, 2)};
+
+export const versionIndexes = ${JSON.stringify(versionIndexes, null, 2)};
+
+export const versions = ${JSON.stringify(sortedVersions, null, 2)};
 
 export const changeLogs = ${JSON.stringify(result, null, 2)};`;
 

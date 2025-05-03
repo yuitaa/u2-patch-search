@@ -1,5 +1,5 @@
 import './style.css';
-import { fixTypes, versions, changeLogs } from './generated/data.js';
+import { fixTypes, versions, versionIndexes, changeLogs } from './generated/data.js';
 import { fixTypePrefixes } from './consts.js'
 
 function createFixTypeCheckbox(name) {
