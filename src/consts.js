@@ -7,5 +7,6 @@ export const fixTypePrefixes = {
   "change": "📝",
   "balance": "⚖",
   "freeze_fix": "🧊",
+  "revert": "🗑",
   "performance_improvement": "⚡",
 }
