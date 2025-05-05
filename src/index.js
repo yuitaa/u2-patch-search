@@ -225,7 +225,7 @@ function parseQuery(search) {
   return result;
 }
 
-function onFormUpdate() {
+function onGenerateLinkButtonClick() {
   const formData = getFormData();
   const searchParam = parseFormData(formData);
 
@@ -236,7 +236,10 @@ function onFormUpdate() {
     const url = `${location.origin}${location.pathname}`;
     history.replaceState(null, "", url);
   };
+}
 
+function onFormUpdate() {
+  const formData = getFormData();
   document.querySelectorAll('.result-table-row').forEach(el => el.remove());
 
   // 検索
@@ -282,6 +285,8 @@ window.addEventListener('load', () => {
   ['version-start', 'version-end', 'include'].forEach((id) => { document.getElementById(id).addEventListener('change', onFormUpdate) });
   document.getElementById('query').addEventListener('input', onFormUpdate)
   setFormData(parseQuery(location.search));
+
+  document.getElementById('generate-link-button').addEventListener('click', onGenerateLinkButtonClick);
 
   onFormUpdate();
 })
