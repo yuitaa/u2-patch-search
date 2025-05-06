@@ -8,6 +8,7 @@
     "build": "webpack --mode production"
   },
   "devDependencies": {
+    "copy-webpack-plugin": "^13.0.0",
     "css-loader": "^7.1.2",
     "css-minimizer-webpack-plugin": "^7.0.2",
     "front-matter": "^4.0.2",
