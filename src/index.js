@@ -1,6 +1,8 @@
 import './style.css';
 import { fixTypes, versions, versionIndexes, changeLogs } from './generated/data.js';
-import { fixTypePrefixes } from './consts.js'
+import { fixTypePrefixes } from './consts.js';
+import { inject } from "@vercel/analytics";
+inject();
 
 function toTitleCase(str) {
   return str
