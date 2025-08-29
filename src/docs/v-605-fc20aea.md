@@ -8,3 +8,4 @@ url: https://discord.com/channels/563650322518638592/1286425832968949840/1410626
 - Balance: Biomes can also be unlocked when playing classic mode
 - Bug fix: Bots tried to avoid non-activated bombs in versus
 - Bug fix: The new cartridges did not get sampled correctly in endless
+- Change: We default some AMD cards to OpenGL as there are often visual glichtes in both DX12 & Vulkan (you can still manually change the driver and we're trying to debug this issue)
